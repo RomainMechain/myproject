@@ -1,44 +1,87 @@
-from django.db import models
-
-# Create your models here.
 
 from django.db import models
 from django.utils import timezone
 
-class Statut(models.Model) : 
-    numStatut = models.IntegerField()
-    libele = models.CharField(max_length=250)
+PRODUCT_STATUS = (
+    (0, 'Offline'),
+    (1, 'Online'),
+    (2, 'Out of stock')              
+)
 
-    def __unicode__(self) :
-        return "numStatut : {0} libele : {1}".format(self.numStatut, self.libele)
+# Create your models here.
+"""
+    Status : numero, libelle
+"""
+class Status(models.Model):
+    numero  = models.IntegerField()
+    libelle = models.CharField(max_length=100)
+          
+    def __str__(self):
+        return "{0} {1}".format(self.numero, self.libelle)
     
-    def __str__(self) -> str:
-        return "numStatut : {0} libele : {1}".format(self.numStatut, self.libele)
+"""
+Produit : nom, code, etc.
+"""
+class Product(models.Model):
 
-class Product(models.Model) : 
-    name = models.CharField(max_length=250)
-    code = models.CharField(max_length=10, null=True, unique=True)
-    prixHT = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
-    dateFabrication = models.DateTimeField(blank=True, default=timezone.now)
-    statut = models.ForeignKey("Statut",on_delete=models.CASCADE)
+    class Meta:
+        verbose_name = "Produit"
 
-    def __unicode__(self) :
-        return "name : {0} code : {1} prixHT : {2}euros dateFabrication {3} statut : {4}".format(self.name, self.code, self.prixHT, self.dateFabrication, self.statut.libele)
+    name          = models.CharField(max_length=100)
+    code          = models.CharField(max_length=10, null=True, blank=True, unique=True)
+    price_ht      = models.DecimalField(max_digits=8, decimal_places=2,  null=True, blank=True, verbose_name="Prix unitaire HT")
+    price_ttc     = models.DecimalField(max_digits=8, decimal_places=2,  null=True, blank=True, verbose_name="Prix unitaire TTC")
+    status        = models.SmallIntegerField(choices=PRODUCT_STATUS, default=0)
+    date_creation =  models.DateTimeField(blank=True, verbose_name="Date création", default=timezone.now) 
     
-    def __str__(self) -> str:
-        return "name : {0} code : {1} prixHT : {2}euros dateFabrication {3} statut : {4}".format(self.name, self.code, self.prixHT, self.dateFabrication, self.statut.libele)
-    
-class ProductItem(models.Model) : 
-    codeItem = models.CharField(max_length=10, null=True, unique=True)
-    color = models.CharField(max_length=100)
-    product = models.ForeignKey("Product",on_delete=models.CASCADE)
+    def __str__(self):
+        return "{0} {1}".format(self.name, self.code)
 
-    def __unicode__(self) :
-        return "codeItem : {0} color: {1} product name : {2}".format(self.codeItem, self.color, self.product.name)
+"""
+    Déclinaison de produit déterminée par des attributs comme la couleur, etc.
+"""
+class ProductItem(models.Model):
     
-    def __str__(self) -> str:
-        return "codeItem : {0} color: {1} product name : {2}".format(self.codeItem, self.color, self.product.name)
+    class Meta:
+        verbose_name = "Déclinaison Produit"
 
+    color   = models.CharField(max_length=100)
+    code    = models.CharField(max_length=10, null=True, blank=True, unique=True)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    attributes  = models.ManyToManyField("ProductAttributeValue", related_name="product_item", blank=True)
+       
+    def __str__(self):
+        return "{0} {1}".format(self.color, self.code)
+    
+class ProductAttribute(models.Model):
+    """
+    Attributs produit
+    """
+    
+    class Meta:
+        verbose_name = "Attribut"
+        
+    name =  models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+    
+class ProductAttributeValue(models.Model):
+    """
+    Valeurs des attributs
+    """
+    
+    class Meta:
+        verbose_name = "Valeur attribut"
+        ordering = ['position']
+        
+    value              = models.CharField(max_length=100)
+    product_attribute  = models.ForeignKey('ProductAttribute', verbose_name="Unité", on_delete=models.CASCADE)
+    position           = models.PositiveSmallIntegerField("Position", null=True, blank=True)
+     
+    def __str__(self):
+        return "{0} [{1}]".format(self.value, self.product_attribute)
+    
 
 #python3 manage.py makemigrations LesProduits
 #python3 manage.py sqlmigrate LesProduits 0001
