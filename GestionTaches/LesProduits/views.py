@@ -10,13 +10,14 @@ def index(request, name) :
     return HttpResponse("Bonjour, voici ma première vue, il est écrit : " + name)
 
 def home(request) :
-    return HttpResponse("Bonjour, voici ma première vue, il n'y a aucun paramètres")
+    print(request.__dict__)
+    name_r = request.GET["name"]
+    return HttpResponse("Bonjour, voici ma première vue, il n'y a aucun paramètres, vous êtes : "+name_r)
 
 def listProducts(request) : 
-    prdts = Product.objects.all()
-    res = "<h1> Liste de mes produits </h1><ul>"
-    for prod in prdts : 
-        res += f"<li>{prod.name}</li>"
-    res += "</ul>"
-    return HttpResponse(res)
+    prdcts = Product.objects.all()
+    return render(request, 'list_products.html', {'prdcts' : prdcts})
+
+def product(request, code) : 
+    pass 
 

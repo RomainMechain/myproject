@@ -4,6 +4,7 @@ from .models import Product, ProductAttribute, ProductAttributeValue, ProductIte
 class ProductItemAdmin(admin.TabularInline):
     model = ProductItem
     filter_vertical = ("attributes",)
+    raw_id_fields = ["attributes"]
 
 class ProductFilter(admin.SimpleListFilter):
     title = 'filtre produit'
