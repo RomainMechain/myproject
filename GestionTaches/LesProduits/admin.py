@@ -32,18 +32,17 @@ def set_product_offline(modeladmin, request, queryset):
 class ProductAdmin(admin.ModelAdmin):
     model = Product
     inlines = [ProductItemAdmin,]
-    list_display = ["id", "name", "price_ht", "price_ttc", "code", "tax"]
-    list_editable = ["name", "price_ht", "price_ttc"]
-    radio_fields = {"status": admin.VERTICAL}
-    search_fields = ('name', 'status')
     list_filter = (ProductFilter,)
     date_hierarchy = 'date_creation'
-    ordering = ('-date_creation',)
     actions = [set_product_online, set_product_offline]
+    list_display = ["code", "name", "price_ht", "price_ttc","tax"]
+    list_editable = ["name", "price_ht", "price_ttc"]
 
     def tax(self, instance):
-        return (instance.price_ttc / instance.price_ht)-1
-        tax.short_description = "Taxes (%)"
+        return ((instance.price_ttc / instance.price_ht)-1)*100
+    
+    tax.short_description = "Taxes (%)"
+    tax.admin_order_field = "price_ht"
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductItem)
