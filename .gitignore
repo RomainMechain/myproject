@@ -2,3 +2,4 @@ GestionTaches/db.sqlite3
 GestionTaches/GestionTaches/__pycache__
 GestionTaches/LesProduits/__pycache__
 GestionTaches/LesProduits/migrations/__pycache__
+GestionTaches/LesProduits/static/node_modules

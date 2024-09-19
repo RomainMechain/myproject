@@ -18,6 +18,6 @@ def listProducts(request) :
     prdcts = Product.objects.all()
     return render(request, 'list_products.html', {'prdcts' : prdcts})
 
-def product(request, code) : 
-    pass 
+# def product(request, code) : 
+#     prod = Product.objects.
 
