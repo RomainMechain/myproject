@@ -7,6 +7,8 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from LesProduits.forms import ContactUsForm
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -24,6 +26,21 @@ def listProducts(request) :
 
 # def product(request, code) : 
 #     prod = Product.objects.
+
+def ContactView(request):
+    titreh1 = "Contact us !"
+    if request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            send_mail(
+                subject=f'Message from {form.cleaned_data["name"] or "anonyme"} via MonProjet Contact Us form',
+                message=form.cleaned_data['message'],
+                from_email=form.cleaned_data['email'],
+                recipient_list=['admin@monprojet.com'],
+            )
+    else:
+        form = ContactUsForm()
+    return render(request, "contact.html", {'titreh1': titreh1, 'form': form})
 
 class HomeView(TemplateView) :
     template_name = "home.html"
