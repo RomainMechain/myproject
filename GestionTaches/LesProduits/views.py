@@ -3,12 +3,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from LesProduits.models import Product
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm
+from LesProduits.forms import ContactUsForm, ProductForm
 from django.core.mail import send_mail
+from django.shortcuts import redirect
+from django.forms.models import BaseModelForm
+from django.urls import reverse_lazy
 
 # Create your views here.
 
@@ -129,3 +132,26 @@ class DisconnectView(TemplateView):
     def get(self, request, **kwargs):
         logout(request)
         return render(request, self.template_name)
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class=ProductForm
+    template_name = "new_product.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('product-detail', product.id)
+    
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class=ProductForm
+    template_name = "update_product.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('product-detail', product.id)
+    
+class ProductDeleteView(DeleteView) : 
+    model = Product
+    template_name = "delete_product.html"
+    success_url = reverse_lazy('product-list')
