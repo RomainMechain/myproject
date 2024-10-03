@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Produit</th>
+            <th>Attributs associés</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in productitems %}
+        <tr>
+            <td>{{ item.code }}</td>
+            <td>{{ item.product.name }}</td>
+            <td>
+                {% for attribute in item.attributes.all %}
+                <p>{{ attribute.product_attribute.name }} : {{ attribute.value }}</p>
+                {% empty %}
+                <p>Aucune valeur</p>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-from LesProduits.models import Product
+from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
@@ -12,6 +12,8 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -89,6 +91,30 @@ class ProductListView(ListView):
         context['prdcts'] = Product.objects.all()
         return context
     
+# class ProductAttributeListView(ListView) : 
+#     model = ProductAttribute
+#     template_name = "list_ProductAttribute.html"
+#     context_object_name = "Attribut" 
+
+#     def get_context_data(self, **kwargs) :
+#         context = super(ProductAttributeListView, self).get_context_data(**kwargs)
+#         context['titreh1'] = "Liste des attributs"
+#         context['attributs'] = ProductAttribute.objects.all()
+#         return context
+
+class ProductAttributeListView(ListView):
+    model = ProductAttribute
+    template_name = "list_ProductAttribute.html"
+    context_object_name = "productattributes"
+
+    def get_queryset(self ):
+        return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des attributs"
+        return context
+    
 class ProductDetailView(DetailView):
     model = Product
     template_name = "detail_product.html"
@@ -133,6 +159,7 @@ class DisconnectView(TemplateView):
         logout(request)
         return render(request, self.template_name)
 
+@method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
     model = Product
     form_class=ProductForm
@@ -141,7 +168,8 @@ class ProductCreateView(CreateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
         return redirect('product-detail', product.id)
-    
+   
+@method_decorator(login_required, name='dispatch')   
 class ProductUpdateView(UpdateView):
     model = Product
     form_class=ProductForm
@@ -150,8 +178,33 @@ class ProductUpdateView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
         return redirect('product-detail', product.id)
-    
+
+@method_decorator(login_required, name='dispatch')   
 class ProductDeleteView(DeleteView) : 
     model = Product
     template_name = "delete_product.html"
     success_url = reverse_lazy('product-list')
+
+class ProductAttributeDetailView(DetailView):
+    model = ProductAttribute
+    template_name = "detail_attribute.html"
+    context_object_name = "productattribute"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeDetailView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Détail attribut"
+        context['values']=ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
+        return context
+    
+class ProductItemListView(ListView):
+    model = ProductItem
+    template_name = "list_items.html"
+    context_object_name = "productitems"
+
+    def get_queryset(self ):
+        return ProductItem.objects.select_related('product').prefetch_related('attributes')
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProductItemListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des déclinaisons"
+        return context

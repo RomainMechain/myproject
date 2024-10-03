@@ -40,7 +40,10 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ["name", "price_ht", "price_ttc"]
 
     def tax(self, instance):
-        return ((instance.price_ttc / instance.price_ht)-1)*100
+        try : 
+            return ((instance.price_ttc / instance.price_ht)-1)*100
+        except : 
+            return 0 
     
     tax.short_description = "Taxes (%)"
     tax.admin_order_field = "price_ht"
