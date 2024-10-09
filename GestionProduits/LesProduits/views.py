@@ -1,7 +1,5 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse
-
 from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
@@ -14,38 +12,6 @@ from django.forms.models import BaseModelForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-
-# Create your views here.
-
-def index(request, name) :
-    return HttpResponse("Bonjour, voici ma première vue, il est écrit : " + name)
-
-def home(request) :
-    print(request.__dict__)
-    name_r = request.GET["name"]
-    return HttpResponse("Bonjour, voici ma première vue, il n'y a aucun paramètres, vous êtes : "+name_r)
-
-def listProducts(request) : 
-    prdcts = Product.objects.all()
-    return render(request, 'list_products.html', {'prdcts' : prdcts})
-
-# def product(request, code) : 
-#     prod = Product.objects.
-
-def ContactView(request):
-    titreh1 = "Contact us !"
-    if request.method == 'POST':
-        form = ContactUsForm(request.POST)
-        if form.is_valid():
-            send_mail(
-                subject=f'Message from {form.cleaned_data["name"] or "anonyme"} via MonProjet Contact Us form',
-                message=form.cleaned_data['message'],
-                from_email=form.cleaned_data['email'],
-                recipient_list=['admin@monprojet.com'],
-            )
-    else:
-        form = ContactUsForm()
-    return render(request, "contact.html", {'titreh1': titreh1, 'form': form})
 
 class HomeView(TemplateView) :
     template_name = "home.html"
@@ -69,17 +35,12 @@ class HomeParamView(TemplateView) :
     def post(self, request, **kwargs):
         return render(request, self.template_name)
 
-class AboutView(TemplateView):
-    template_name = "home.html"
+# les Produits :
 
-    def get_context_data(self, **kwargs):
-        context = super(AboutView, self).get_context_data(**kwargs)
-        context['titreh1'] = "About us..."
-        return context
-    
-    def post(self, request, **kwargs):
-        return render(request, self.template_name)
-    
+def listProducts(request) : 
+    prdcts = Product.objects.all()
+    return render(request, 'list_products.html', {'prdcts' : prdcts})
+
 class ProductListView(ListView):
     model = Product
     template_name = "list_products.html"
@@ -89,30 +50,6 @@ class ProductListView(ListView):
         context = super(ProductListView, self).get_context_data(**kwargs)
         context['titreh1'] = "Liste des produits"
         context['prdcts'] = Product.objects.all()
-        return context
-    
-# class ProductAttributeListView(ListView) : 
-#     model = ProductAttribute
-#     template_name = "list_ProductAttribute.html"
-#     context_object_name = "Attribut" 
-
-#     def get_context_data(self, **kwargs) :
-#         context = super(ProductAttributeListView, self).get_context_data(**kwargs)
-#         context['titreh1'] = "Liste des attributs"
-#         context['attributs'] = ProductAttribute.objects.all()
-#         return context
-
-class ProductAttributeListView(ListView):
-    model = ProductAttribute
-    template_name = "list_ProductAttribute.html"
-    context_object_name = "productattributes"
-
-    def get_queryset(self ):
-        return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
-    
-    def get_context_data(self, **kwargs):
-        context = super(ProductAttributeListView, self).get_context_data(**kwargs)
-        context['titremenu'] = "Liste des attributs"
         return context
     
 class ProductDetailView(DetailView):
@@ -125,6 +62,34 @@ class ProductDetailView(DetailView):
         context['titreh1'] = "Détail produit"
         return context
     
+@method_decorator(login_required, name='dispatch')
+class ProductCreateView(CreateView):
+    model = Product
+    form_class=ProductForm
+    template_name = "new_product.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('product-detail', product.id)
+   
+@method_decorator(login_required, name='dispatch')   
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class=ProductForm
+    template_name = "update_product.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('product-detail', product.id)
+
+@method_decorator(login_required, name='dispatch')   
+class ProductDeleteView(DeleteView) : 
+    model = Product
+    template_name = "delete_product.html"
+    success_url = reverse_lazy('product-list')
+
+# Authentification :
+
 class ConnectView(LoginView):
     template_name = 'login.html'
 
@@ -158,32 +123,21 @@ class DisconnectView(TemplateView):
     def get(self, request, **kwargs):
         logout(request)
         return render(request, self.template_name)
+    
+# Attributes :
 
-@method_decorator(login_required, name='dispatch')
-class ProductCreateView(CreateView):
-    model = Product
-    form_class=ProductForm
-    template_name = "new_product.html"
+class ProductAttributeListView(ListView):
+    model = ProductAttribute
+    template_name = "list_ProductAttribute.html"
+    context_object_name = "productattributes"
 
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        product = form.save()
-        return redirect('product-detail', product.id)
-   
-@method_decorator(login_required, name='dispatch')   
-class ProductUpdateView(UpdateView):
-    model = Product
-    form_class=ProductForm
-    template_name = "update_product.html"
-
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        product = form.save()
-        return redirect('product-detail', product.id)
-
-@method_decorator(login_required, name='dispatch')   
-class ProductDeleteView(DeleteView) : 
-    model = Product
-    template_name = "delete_product.html"
-    success_url = reverse_lazy('product-list')
+    def get_queryset(self ):
+        return ProductAttribute.objects.all().prefetch_related('productattributevalue_set')
+    
+    def get_context_data(self, **kwargs):
+        context = super(ProductAttributeListView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Liste des attributs"
+        return context
 
 class ProductAttributeDetailView(DetailView):
     model = ProductAttribute
@@ -196,6 +150,8 @@ class ProductAttributeDetailView(DetailView):
         context['values']=ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
         return context
     
+# Items :
+
 class ProductItemListView(ListView):
     model = ProductItem
     template_name = "list_items.html"
@@ -208,3 +164,31 @@ class ProductItemListView(ListView):
         context = super(ProductItemListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des déclinaisons"
         return context
+    
+# Support :
+    
+class AboutView(TemplateView):
+    template_name = "home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AboutView, self).get_context_data(**kwargs)
+        context['titreh1'] = "About us..."
+        return context
+    
+    def post(self, request, **kwargs):
+        return render(request, self.template_name)
+    
+def ContactView(request):
+    titreh1 = "Contact us !"
+    if request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            send_mail(
+                subject=f'Message from {form.cleaned_data["name"] or "anonyme"} via MonProjet Contact Us form',
+                message=form.cleaned_data['message'],
+                from_email=form.cleaned_data['email'],
+                recipient_list=['admin@monprojet.com'],
+            )
+    else:
+        form = ContactUsForm()
+    return render(request, "contact.html", {'titreh1': titreh1, 'form': form})
