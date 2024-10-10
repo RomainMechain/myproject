@@ -37,13 +37,13 @@ class HomeParamView(TemplateView) :
 
 # les Produits :
 
-def listProducts(request) : 
-    prdcts = Product.objects.all()
-    return render(request, 'list_products.html', {'prdcts' : prdcts})
+# def listProducts(request) : 
+#     prdcts = Product.objects.all()
+#     return render(request, 'LesProduits/list_products.html', {'prdcts' : prdcts})
 
 class ProductListView(ListView):
     model = Product
-    template_name = "list_products.html"
+    template_name = "LesProduits/list_products.html"
     context_object_name = "products"
 
     def get_context_data(self, **kwargs):
@@ -54,7 +54,7 @@ class ProductListView(ListView):
     
 class ProductDetailView(DetailView):
     model = Product
-    template_name = "detail_product.html"
+    template_name = "LesProduits/detail_product.html"
     context_object_name = "product"
 
     def get_context_data(self, **kwargs):
@@ -66,7 +66,7 @@ class ProductDetailView(DetailView):
 class ProductCreateView(CreateView):
     model = Product
     form_class=ProductForm
-    template_name = "new_product.html"
+    template_name = "LesProduits/new_product.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
@@ -76,7 +76,7 @@ class ProductCreateView(CreateView):
 class ProductUpdateView(UpdateView):
     model = Product
     form_class=ProductForm
-    template_name = "update_product.html"
+    template_name = "LesProduits/update_product.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
@@ -85,13 +85,13 @@ class ProductUpdateView(UpdateView):
 @method_decorator(login_required, name='dispatch')   
 class ProductDeleteView(DeleteView) : 
     model = Product
-    template_name = "delete_product.html"
+    template_name = "LesProduits/delete_product.html"
     success_url = reverse_lazy('product-list')
 
 # Authentification :
 
 class ConnectView(LoginView):
-    template_name = 'login.html'
+    template_name = 'Authentification/login.html'
 
     def post(self, request, **kwargs):
         username = request.POST.get('username', False)
@@ -101,10 +101,10 @@ class ConnectView(LoginView):
             login(request, user)
             return render(request, 'home.html', {'titreh1': "hello " + username + ", you're connected"})
         else:
-            return render(request, 'register.html')
+            return render(request, 'Authentification/register.html')
 
 class RegisterView(TemplateView):
-    template_name = 'register.html'
+    template_name = 'Authentification/register.html'
 
     def post(self, request, **kwargs):
         username = request.POST.get('username', False)
@@ -113,12 +113,12 @@ class RegisterView(TemplateView):
         user = User.objects.create_user(username, mail, password)
         user.save()
         if user is not None and user.is_active:
-            return render(request, 'login.html')
+            return render(request, 'Authentification/login.html')
         else:
-            return render(request, 'register.html')
+            return render(request, 'Authentification/register.html')
         
 class DisconnectView(TemplateView):
-    template_name = 'logout.html'
+    template_name = 'Authentification/logout.html'
 
     def get(self, request, **kwargs):
         logout(request)
@@ -128,7 +128,7 @@ class DisconnectView(TemplateView):
 
 class ProductAttributeListView(ListView):
     model = ProductAttribute
-    template_name = "list_ProductAttribute.html"
+    template_name = "Attributs/list_ProductAttribute.html"
     context_object_name = "productattributes"
 
     def get_queryset(self ):
@@ -141,7 +141,7 @@ class ProductAttributeListView(ListView):
 
 class ProductAttributeDetailView(DetailView):
     model = ProductAttribute
-    template_name = "detail_attribute.html"
+    template_name = "Attributs/detail_attribute.html"
     context_object_name = "productattribute"
 
     def get_context_data(self, **kwargs):
@@ -154,7 +154,7 @@ class ProductAttributeDetailView(DetailView):
 
 class ProductItemListView(ListView):
     model = ProductItem
-    template_name = "list_items.html"
+    template_name = "Items/list_items.html"
     context_object_name = "productitems"
 
     def get_queryset(self ):
@@ -191,4 +191,4 @@ def ContactView(request):
             )
     else:
         form = ContactUsForm()
-    return render(request, "contact.html", {'titreh1': titreh1, 'form': form})
+    return render(request, "Support/contact.html", {'titreh1': titreh1, 'form': form})

@@ -28,7 +28,7 @@ urlpatterns = [
     path("items/",views.ProductItemListView.as_view(), name="item-list"),
 
     # Support : 
-    path("about",views.AboutView.as_view()),
+    path("about",views.AboutView.as_view(), name='about-page'),
     path('contact/', views.ContactView, name='contact'),
 
 ]
