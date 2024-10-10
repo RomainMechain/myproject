@@ -22,6 +22,9 @@
                 <p>Aucune valeur</p>
                 {% endfor %}
             </td>
+            <td>
+                <a href="{% url 'item-detail' item.id %}" class="btn btn-primary mt-2">Détails</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

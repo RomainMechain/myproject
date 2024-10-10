@@ -6,5 +6,6 @@
         {% csrf_token %}
         <p>Etes-vous sûr de vouloir supprimer le produit : {{ object.name }} ?</p>
         <button type="submit" class="btn btn-success mt-2">Confirmer</button>
+        <a href="{% url 'product-list' %}" class="btn btn-danger mt-2">Annuler</a>
     </form>
 {% endblock %}

@@ -126,6 +126,7 @@ class DisconnectView(TemplateView):
     
 # Attributes :
 
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeListView(ListView):
     model = ProductAttribute
     template_name = "Attributs/list_ProductAttribute.html"
@@ -138,7 +139,8 @@ class ProductAttributeListView(ListView):
         context = super(ProductAttributeListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des attributs"
         return context
-
+    
+@method_decorator(login_required, name='dispatch')
 class ProductAttributeDetailView(DetailView):
     model = ProductAttribute
     template_name = "Attributs/detail_attribute.html"
@@ -163,6 +165,18 @@ class ProductItemListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ProductItemListView, self).get_context_data(**kwargs)
         context['titremenu'] = "Liste des déclinaisons"
+        return context
+    
+@method_decorator(login_required, name='dispatch')
+class ProductItemDetailView(DetailView):
+    model = ProductItem
+    template_name = "Items/item_detail.html"
+    context_object_name = "productitem"
+    def get_context_data(self, **kwargs):
+        context = super(ProductItemDetailView, self).get_context_data(**kwargs)
+        context['titremenu'] = "Détail déclinaison"
+        # Récupérer les attributs associés à cette déclinaison
+        context['attributes'] = self.object.attributes.all()
         return context
     
 # Support :
