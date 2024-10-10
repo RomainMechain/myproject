@@ -8,6 +8,12 @@ PRODUCT_STATUS = (
     (2, 'Out of stock')              
 )
 
+COMMANDE_STATUS = (
+    (0, 'En preparation'),
+    (1, 'Passée'),
+    (2, 'Reçue'),              
+)
+
 # Create your models here.
 """
     Status : numero, libelle
@@ -49,6 +55,7 @@ class ProductItem(models.Model):
     code    = models.CharField(max_length=10, null=True, blank=True, unique=True)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     attributes  = models.ManyToManyField("ProductAttributeValue", related_name="product_item", blank=True)
+    quantité = models.PositiveIntegerField("Quantité", default=0, null=True, blank=True)
        
     def __str__(self):
         return "{0} {1}".format(self.color, self.code)
@@ -82,6 +89,7 @@ class ProductAttributeValue(models.Model):
     def __str__(self):
         return "{0} [{1}]".format(self.value, self.product_attribute)
     
+
 
 #python3 manage.py makemigrations LesProduits
 #python3 manage.py sqlmigrate LesProduits 0001
