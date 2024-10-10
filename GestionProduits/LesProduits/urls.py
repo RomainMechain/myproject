@@ -26,6 +26,7 @@ urlpatterns = [
 
     # Items : 
     path("items/",views.ProductItemListView.as_view(), name="item-list"),
+    path("item/<pk>",views.ProductItemDetailView.as_view(), name="item-detail"),
 
     # Support : 
     path("about",views.AboutView.as_view(), name='about-page'),
