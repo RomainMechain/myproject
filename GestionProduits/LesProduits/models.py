@@ -55,7 +55,7 @@ class ProductItem(models.Model):
     code    = models.CharField(max_length=10, null=True, blank=True, unique=True)
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     attributes  = models.ManyToManyField("ProductAttributeValue", related_name="product_item", blank=True)
-    quantité = models.PositiveIntegerField("Quantité", default=0, null=True, blank=True)
+    quantity = models.PositiveIntegerField("Quantité", default=0, null=True, blank=True)
        
     def __str__(self):
         return "{0} {1}".format(self.color, self.code)
@@ -88,6 +88,69 @@ class ProductAttributeValue(models.Model):
      
     def __str__(self):
         return "{0} [{1}]".format(self.value, self.product_attribute)
+    
+class Provider(models.Model):
+    """
+    Fournisseur
+    """
+    
+    class Meta:
+        verbose_name = "Fournisseur"
+        
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
+    phone = models.CharField(max_length=100)
+
+    def __str__(self):
+        return "{0} [{1}]".format(self.name, self.address)
+    
+class ProviderProductPrice(models.Model):
+    """
+    Prix d'achat d'un produit chez un fournisseur
+    """
+    
+    class Meta:
+        verbose_name = "Prix d'achat"
+        
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    provider = models.ForeignKey('Provider', on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=8, decimal_places=2,  null=True, blank=True, verbose_name="Prix unitaire HT")
+    
+    def __str__(self):
+        return "{0} [{1}]".format(self.product, self.provider)
+    
+class Order(models.Model):
+    """
+    Commande
+    """
+    
+    class Meta:
+        verbose_name = "Commande"
+        
+    date_creation =  models.DateTimeField(blank=True, verbose_name="Date création", default=timezone.now) 
+    status = models.SmallIntegerField(choices=COMMANDE_STATUS, default=0)
+    name = models.CharField(max_length=100)
+    provider = models.ForeignKey('Provider', on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "{0} [{1}]".format(self.name, self.date_creation)
+    
+class OrderProductItem(models.Model):
+    """
+    Produit commandé
+    """
+    
+    class Meta:
+        verbose_name = "Produit commandé"
+        
+    productItem = models.ForeignKey('ProductItem', on_delete=models.CASCADE)
+    order = models.ForeignKey('Order', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField("Quantité", default=0, null=True, blank=True)
+
+    def __str__(self):
+        return "{0} [{1}]".format(self.productItem, self.order)
+    
+    
     
 
 
