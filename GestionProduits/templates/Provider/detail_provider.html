@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+    <h2>{{ provider.name }}</h2>
+    <ul>
+        <li>Adresse : {{ provider.address }}</li>
+        <li>Téléphone : {{ provider.phone }}</li>
+    </ul>
+    <a href="{% url 'provider-update' provider.id %}" class="btn btn-secondary mt-2">modifier</a>
+    <a href="{% url 'provider-delete' provider.id %}" class="btn btn-danger mt-2">Supprimer</a>
+    <a href="{% url 'provider-list' %}" class="btn btn-primary mt-2">Retour à la liste des fournisseurs</a>
+{% endblock %}

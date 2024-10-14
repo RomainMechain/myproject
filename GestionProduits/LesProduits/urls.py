@@ -41,6 +41,9 @@ urlpatterns = [
 
     # Fournisseurs :
     path("providers",views.ProviderListView.as_view(), name="provider-list"),
+    path("provider/<pk>",views.ProviderDetailView.as_view(), name="provider-detail"),
     path("provider/add/",views.ProviderCreateView.as_view(), name="provider-add"),
+    path("provider/<pk>/update/",views.ProviderUpdateView.as_view(), name="provider-update"),
+    path("provider/<pk>/delete/",views.ProviderDeleteView.as_view(), name="provider-delete"),
 
 ]

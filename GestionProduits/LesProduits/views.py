@@ -290,6 +290,17 @@ class ProviderListView(ListView):
         return context
     
 @method_decorator(admin_required, name='dispatch')
+class ProviderDetailView(DetailView):
+    model = Provider
+    template_name = "Provider/detail_provider.html"
+    context_object_name = "provider"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderDetailView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Détail fournisseur"
+        return context
+    
+@method_decorator(admin_required, name='dispatch')
 class ProviderCreateView(CreateView):
     model = Provider
     form_class = ProviderForm
@@ -298,3 +309,20 @@ class ProviderCreateView(CreateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         provider = form.save()
         return redirect('provider-list')
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderUpdateView(UpdateView):
+    model = Provider
+    form_class = ProviderForm
+    template_name = "Provider/update_provider.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        provider = form.save()
+        return redirect('provider-detail', provider.id)
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderDeleteView(DeleteView) : 
+    model = Provider
+    template_name = "Provider/delete_provider.html"
+    success_url = reverse_lazy('provider-list')
+    
