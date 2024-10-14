@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
+from django.http import HttpResponse, HttpResponseForbidden
+from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
@@ -12,6 +12,20 @@ from django.forms.models import BaseModelForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required , user_passes_test
 from django.utils.decorators import method_decorator
+from functools import wraps
+
+# Décorateurs :
+
+def admin_required(function):
+    @wraps(function)
+    def wrap(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_superuser:
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+    return wrap
+
+# Home :
 
 class HomeView(TemplateView) :
     template_name = "home.html"
@@ -260,3 +274,17 @@ def ContactView(request):
     else:
         form = ContactUsForm()
     return render(request, "Support/contact.html", {'titreh1': titreh1, 'form': form})
+
+# Provider : 
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderListView(ListView):
+    model = Provider
+    template_name = "Provider/list_providers.html"
+    context_object_name = "providers"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderListView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Liste des fournisseurs"
+        context['providers'] = Provider.objects.all()
+        return context

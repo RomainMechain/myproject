@@ -39,4 +39,7 @@ urlpatterns = [
     path("about",views.AboutView.as_view(), name='about-page'),
     path('contact/', views.ContactView, name='contact'),
 
+    # Fournisseurs :
+    path("providers",views.ProviderListView.as_view(), name="provider-list"),
+
 ]
