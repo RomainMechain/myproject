@@ -179,6 +179,13 @@ class ProductItemDetailView(DetailView):
         context['attributes'] = self.object.attributes.all()
         return context
     
+@method_decorator(login_required, name='dispatch')   
+class ProductItemDeleteView(DeleteView) : 
+    model = ProductItem
+    template_name = "Items/delete_items.html"
+    success_url = reverse_lazy('item-list')
+
+    
 # Support :
     
 class AboutView(TemplateView):
