@@ -171,7 +171,7 @@ class ProductAttributeUpdateView(UpdateView):
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
-        return redirect('product-detail', product.id)
+        return redirect('attribut-list', product.id)
 
 @method_decorator(login_required, name='dispatch')
 class ProductAttributeDeleteView(DeleteView) : 
