@@ -24,9 +24,12 @@
             </td>
             <td>
                 <a href="{% url 'item-detail' item.id %}" class="btn btn-primary mt-2">Détails</a>
+                <a href="{% url 'item-delete' item.id %}" class="btn btn-danger mt-2">Supprimer</a>
+                <a href="{% url 'item-update' item.id %}" class="btn btn-secondary mt-2">modifier</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<a href="{% url 'item-add'  %}" class="btn btn-primary mt-2">Ajouter Item</a>
 {% endblock %}

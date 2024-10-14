@@ -16,7 +16,22 @@
         <li>Prix TTC: {{ product.price_ttc }}</li>
         <li>Date de création : {{ product.date_creation }}</li>
     </ul>
-    <a href="{% url 'product-update' product.id %}" class="btn btn-primary mt-2">modifier</a>
-    <a href="{% url 'product-delete' product.id %}" class="btn btn-primary mt-2">Supprimer</a>
+    <a href="{% url 'product-update' product.id %}" class="btn btn-secondary mt-2">modifier</a>
+    <a href="{% url 'product-delete' product.id %}" class="btn btn-danger mt-2">Supprimer</a>
     <a href="{% url 'product-list' %}" class="btn btn-primary mt-2">Retour à la liste des produits</a>
+
+
+    <h3>Item associés</h3>
+    <ul>
+        {% for item in items %}
+            {% for attribute in item.attributes.all %}
+            <p>{{ attribute.product_attribute.name }} : {{ attribute.value }}</p>
+            {% empty %}
+                <p>Aucune valeur</p>
+            {% endfor %}
+            <a href="{% url 'item-detail' item.id %}" class="btn btn-primary mt-2">Détails Item</a>
+        {% empty %}
+            <li>Aucun item associé à ce produit.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

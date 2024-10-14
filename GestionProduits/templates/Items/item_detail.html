@@ -1,4 +1,4 @@
-{% extends 'lesProduits/base.html' %}
+{% extends 'base.html' %}
 {% block title %}
 Mon application DJANGO
 {% endblock %}
@@ -6,14 +6,17 @@ Mon application DJANGO
 <h1>{{titremenu}}</h1>
 {% endblock %}
 {% block contenu %}
-<h2>{{ productitem.code }}</h2>
+<h2>{{ productitem.product.name }}</h2>
 <ul>
-<li>Produit : {{ productitem.product }}</li>
+<li>Code : {{ productitem.code }}</li>
 {% for attribute in attributes %}
 <li>{{ attribute.product_attribute.name }} : {{ attribute.value }}</li>
+<li>Quantité : {{ productitem.quantity }}</li>
 {% empty %}
 <li>Aucun attribut associé à cette déclinaison.</li>
 {% endfor %}
 </ul>
 <a href="{% url 'item-list' %}" class="btn btn-primary mt-2">Retour</a>
+<a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger mt-2">Supprimer</a>
+<a href="{% url 'item-update' productitem.id %}" class="btn btn-secondary mt-2">modifier</a>
 {% endblock %}

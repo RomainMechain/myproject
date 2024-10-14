@@ -5,12 +5,12 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required , user_passes_test
 from django.utils.decorators import method_decorator
 from functools import wraps
 
@@ -73,6 +73,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
+        context['items'] = ProductItem.objects.filter(product=self.object)
         context['titreh1'] = "Détail produit"
         return context
     
@@ -96,7 +97,7 @@ class ProductUpdateView(UpdateView):
         product = form.save()
         return redirect('product-detail', product.id)
 
-@method_decorator(login_required, name='dispatch')   
+@method_decorator(login_required, name='dispatch')
 class ProductDeleteView(DeleteView) : 
     model = Product
     template_name = "LesProduits/delete_product.html"
@@ -166,6 +167,32 @@ class ProductAttributeDetailView(DetailView):
         context['values']=ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
         return context
     
+@method_decorator(login_required, name='dispatch')
+class ProductAttributeCreateView(CreateView):
+    model = ProductAttribute
+    form_class=AttributsValuesForm
+    template_name = "Attributs/new_attributs.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('attribut-list')
+   
+@method_decorator(login_required, name='dispatch')   
+class ProductAttributeUpdateView(UpdateView):
+    model = ProductAttribute
+    form_class=AttributsValuesForm
+    template_name = "Attributs/update_attribut.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('attribut-list')
+
+@method_decorator(login_required, name='dispatch')
+class ProductAttributeDeleteView(DeleteView) : 
+    model = ProductAttribute
+    template_name = "Attributs/delete_attribute.html"
+    success_url = reverse_lazy('attribut-list')
+    
 # Items :
 
 class ProductItemListView(ListView):
@@ -192,6 +219,33 @@ class ProductItemDetailView(DetailView):
         # Récupérer les attributs associés à cette déclinaison
         context['attributes'] = self.object.attributes.all()
         return context
+    
+@method_decorator(login_required, name='dispatch')   
+class ProductItemDeleteView(DeleteView) : 
+    model = ProductItem
+    template_name = "Items/delete_items.html"
+    success_url = reverse_lazy('item-list')
+
+@method_decorator(login_required, name='dispatch')   
+class ProductItemUpdateView(UpdateView):
+    model = ProductItem
+    form_class=ProductItemForm
+    template_name = "Items/update_product_item.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('item-detail', product.id)
+    
+
+@method_decorator(login_required, name='dispatch')
+class ProductItemCreateView(CreateView):
+    model = ProductItem
+    form_class=ProductItemForm
+    template_name = "Items/new_item.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('item-list')
     
 # Support :
     
