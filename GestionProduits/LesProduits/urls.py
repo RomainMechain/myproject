@@ -23,6 +23,10 @@ urlpatterns = [
     # Attributs :
     path("attributs/",views.ProductAttributeListView.as_view(), name="attribut-list"),
     path("attribut/<pk>",views.ProductAttributeDetailView.as_view(), name="attribute-detail"),
+    path("attribut/<pk>/delete/",views.ProductAttributeDeleteView.as_view(), name="attribute-delete"),
+    path("attributs/<pk>/update/",views.ProductAttributeUpdateView.as_view(), name="attribute-update"),
+    path("attribut/add/",views.ProductAttributeCreateView.as_view(), name="attribut-add"),
+    
 
     # Items : 
     path("items/",views.ProductItemListView.as_view(), name="item-list"),

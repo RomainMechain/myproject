@@ -30,9 +30,12 @@
             </td>
             <td>
                 <a href="{% url 'attribute-detail' attribute.id %}" class="btn btn-primary mt-2">Détails</a>
+                <a href="{% url 'attribute-delete' attribute.id %}" class="btn btn-danger mt-2">Supprimer</a>
+                <a href="{% url 'attribute-update' attribute.id %}" class="btn btn-secondary mt-2">modifier</a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<a href="{% url 'attribut-add'  %}" class="btn btn-primary mt-2">Ajouter Item</a>
 {% endblock %}

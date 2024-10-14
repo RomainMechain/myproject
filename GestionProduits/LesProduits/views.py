@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
@@ -152,6 +152,32 @@ class ProductAttributeDetailView(DetailView):
         context['titremenu'] = "Détail attribut"
         context['values']=ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
         return context
+    
+@method_decorator(login_required, name='dispatch')
+class ProductAttributeCreateView(CreateView):
+    model = ProductAttribute
+    form_class=AttributsValuesForm
+    template_name = "Attributs/new_attributs.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('attribut-list')
+   
+@method_decorator(login_required, name='dispatch')   
+class ProductAttributeUpdateView(UpdateView):
+    model = ProductAttribute
+    form_class=AttributsValuesForm
+    template_name = "Attributs/update_attribut.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('product-detail', product.id)
+
+@method_decorator(login_required, name='dispatch')
+class ProductAttributeDeleteView(DeleteView) : 
+    model = ProductAttribute
+    template_name = "Attributs/delete_attribute.html"
+    success_url = reverse_lazy('attribut-list')
     
 # Items :
 
