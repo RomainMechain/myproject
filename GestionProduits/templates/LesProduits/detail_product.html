@@ -24,8 +24,11 @@
     <h3>Item associés</h3>
     <ul>
         {% for item in items %}
-            <li>Variante du produit : {{ item.color }}</li>
-            <li>Quantité : {{ item.quantity }}</li>
+            {% for attribute in item.attributes.all %}
+            <p>{{ attribute.product_attribute.name }} : {{ attribute.value }}</p>
+            {% empty %}
+                <p>Aucune valeur</p>
+            {% endfor %}
             <a href="{% url 'item-detail' item.id %}" class="btn btn-primary mt-2">Détails Item</a>
         {% empty %}
             <li>Aucun item associé à ce produit.</li>
