@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden
-from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider
+from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
@@ -298,6 +298,7 @@ class ProviderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProviderDetailView, self).get_context_data(**kwargs)
         context['titreh1'] = "Détail fournisseur"
+        context['productsPrice'] = ProviderProductPrice.objects.filter(provider=self.object)
         return context
     
 @method_decorator(admin_required, name='dispatch')

@@ -9,4 +9,20 @@
     <a href="{% url 'provider-update' provider.id %}" class="btn btn-secondary mt-2">modifier</a>
     <a href="{% url 'provider-delete' provider.id %}" class="btn btn-danger mt-2">Supprimer</a>
     <a href="{% url 'provider-list' %}" class="btn btn-primary mt-2">Retour à la liste des fournisseurs</a>
+
+    <h2>Prix fournisseur : </h2>
+    <table>
+        <thead>
+            <th>Produit</th>
+            <th>Prix</th>
+        </thead>
+        <tbody>
+            {% for productPrice in provider.productprice_set.all %}
+                <tr>
+                    <td>{{ productPrice.product.name }}</td>
+                    <td>{{ productPrice.price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
