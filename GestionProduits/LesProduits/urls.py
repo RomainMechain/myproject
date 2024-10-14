@@ -41,5 +41,6 @@ urlpatterns = [
 
     # Fournisseurs :
     path("providers",views.ProviderListView.as_view(), name="provider-list"),
+    path("provider/add/",views.ProviderCreateView.as_view(), name="provider-add"),
 
 ]

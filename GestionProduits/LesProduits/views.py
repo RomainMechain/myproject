@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm, ProviderForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
@@ -288,3 +288,13 @@ class ProviderListView(ListView):
         context['titreh1'] = "Liste des fournisseurs"
         context['providers'] = Provider.objects.all()
         return context
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderCreateView(CreateView):
+    model = Provider
+    form_class = ProviderForm
+    template_name = "Provider/new_provider.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        provider = form.save()
+        return redirect('provider-list')
