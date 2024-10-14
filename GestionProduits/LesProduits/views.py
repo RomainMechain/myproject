@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required , user_passes_test
 from django.utils.decorators import method_decorator
 
 class HomeView(TemplateView) :
@@ -59,6 +59,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
+        context['items'] = ProductItem.objects.filter(product=self.object)
         context['titreh1'] = "Détail produit"
         return context
     
@@ -82,7 +83,7 @@ class ProductUpdateView(UpdateView):
         product = form.save()
         return redirect('product-detail', product.id)
 
-@method_decorator(login_required, name='dispatch')   
+@method_decorator(login_required, name='dispatch')
 class ProductDeleteView(DeleteView) : 
     model = Product
     template_name = "LesProduits/delete_product.html"
