@@ -5,7 +5,7 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
@@ -185,6 +185,26 @@ class ProductItemDeleteView(DeleteView) :
     template_name = "Items/delete_items.html"
     success_url = reverse_lazy('item-list')
 
+@method_decorator(login_required, name='dispatch')   
+class ProductItemUpdateView(UpdateView):
+    model = ProductItem
+    form_class=ProductItemForm
+    template_name = "Items/update_product_item.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('item-detail', product.id)
+    
+
+@method_decorator(login_required, name='dispatch')
+class ProductItemCreateView(CreateView):
+    model = ProductItem
+    form_class=ProductItemForm
+    template_name = "Items/new_item.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
+        return redirect('item-list')
     
 # Support :
     

@@ -28,6 +28,8 @@ urlpatterns = [
     path("items/",views.ProductItemListView.as_view(), name="item-list"),
     path("item/<pk>",views.ProductItemDetailView.as_view(), name="item-detail"),
     path("item/<pk>/delete/",views.ProductItemDeleteView.as_view(), name="item-delete"),
+    path("item/<pk>/update/",views.ProductItemUpdateView.as_view(), name="item-update"),
+    path("item/add/",views.ProductItemCreateView.as_view(), name="item-add"),
 
     # Support : 
     path("about",views.AboutView.as_view(), name='about-page'),
