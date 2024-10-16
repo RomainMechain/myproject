@@ -35,6 +35,9 @@ urlpatterns = [
     path("item/<pk>/update/",views.ProductItemUpdateView.as_view(), name="item-update"),
     path("item/add/",views.ProductItemCreateView.as_view(), name="item-add"),
 
+    #Achat
+    path("achats/<pk>",views.AchatView.as_view(), name="achat_produit"),
+
     # Support : 
     path("about",views.AboutView.as_view(), name='about-page'),
     path('contact/', views.ContactView, name='contact'),
