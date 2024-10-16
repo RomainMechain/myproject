@@ -5,11 +5,11 @@ from django.views.generic import TemplateView, ListView, DetailView, CreateView,
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm, ProviderForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm, ProviderForm, ProviderProductPriceUpdateForm, ProviderProductPriceCreateForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required , user_passes_test
 from django.utils.decorators import method_decorator
 from functools import wraps
@@ -326,4 +326,37 @@ class ProviderDeleteView(DeleteView) :
     model = Provider
     template_name = "Provider/delete_provider.html"
     success_url = reverse_lazy('provider-list')
+
+# ProviderProductPrice :
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderProductPriceUpdateView(UpdateView):
+    model = ProviderProductPrice
+    form_class = ProviderProductPriceUpdateForm
+    template_name = "ProviderProductPrice/update_provider_product_price.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        providerProductPrice = form.save()
+        return redirect('provider-detail', providerProductPrice.provider.id)
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderProductPriceDeleteView(DeleteView):
+    model = ProviderProductPrice
+    template_name = "ProviderProductPrice/delete_provider_product_price.html"
+
+    def get_success_url(self):
+        provider_id = self.object.provider.id
+        return reverse('provider-detail', kwargs={'pk': provider_id})
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderProductPriceCreateView(CreateView):
+    model = ProviderProductPrice
+    form_class = ProviderProductPriceCreateForm
+    template_name = "ProviderProductPrice/new_provider_product_price.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        provider_id = self.kwargs.get('provider_id')
+        form.instance.provider = Provider.objects.get(id=provider_id)
+        providerProductPrice = form.save()
+        return redirect('provider-detail', providerProductPrice.provider.id)
     

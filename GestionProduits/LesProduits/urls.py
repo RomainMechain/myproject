@@ -46,4 +46,9 @@ urlpatterns = [
     path("provider/<pk>/update/",views.ProviderUpdateView.as_view(), name="provider-update"),
     path("provider/<pk>/delete/",views.ProviderDeleteView.as_view(), name="provider-delete"),
 
+    # Prix fournisseurs :
+    path("providerPrice/<pk>/update/",views.ProviderProductPriceUpdateView.as_view(), name="providerPrice-update"),
+    path("providerPrice/<pk>/delete/",views.ProviderProductPriceDeleteView.as_view(), name="providerPrice-delete"),
+    path("providerPrice/<int:provider_id>/add/",views.ProviderProductPriceCreateView.as_view(), name="providerPrice-add"),
+
 ]

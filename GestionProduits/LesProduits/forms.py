@@ -1,5 +1,5 @@
 from django import forms
-from LesProduits.models import Product, ProductItem, ProductAttribute, Provider
+from LesProduits.models import Product, ProductItem, ProductAttribute, Provider, ProviderProductPrice
 
 class ContactUsForm(forms.Form):
     name = forms.CharField(required=False)
@@ -28,3 +28,13 @@ class ProviderForm(forms.ModelForm):
     class Meta:
         model = Provider
         exclude = ['status']
+
+class ProviderProductPriceUpdateForm(forms.ModelForm):
+    class Meta:
+        model = ProviderProductPrice
+        exclude = ['provider', 'product']
+
+class ProviderProductPriceCreateForm(forms.ModelForm):
+    class Meta:
+        model = ProviderProductPrice
+        exclude = ['provider']

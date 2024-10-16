@@ -15,14 +15,20 @@
         <thead>
             <th>Produit</th>
             <th>Prix</th>
+            <th>Actions</th>
         </thead>
         <tbody>
-            {% for productPrice in provider.productprice_set.all %}
+            {% for productPrice in productsPrice %}
                 <tr>
-                    <td>{{ productPrice.product.name }}</td>
+                    <td><a href="{% url 'product-detail' productPrice.product.id %}">{{ productPrice.product.name }}</a></td>
                     <td>{{ productPrice.price }}</td>
+                    <td>
+                        <a href="{% url 'providerPrice-update' productPrice.id %}" class="btn btn-secondary">Modifier</a>
+                        <a href="{% url 'providerPrice-delete' productPrice.id %}" class="btn btn-danger">Supprimer</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'providerPrice-add' provider.id %}" class="btn btn-primary mt-2">Ajouter un prix fournisseur</a>
 {% endblock %}
