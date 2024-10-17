@@ -42,4 +42,16 @@ urlpatterns = [
     path("about",views.AboutView.as_view(), name='about-page'),
     path('contact/', views.ContactView, name='contact'),
 
+    # Fournisseurs :
+    path("providers",views.ProviderListView.as_view(), name="provider-list"),
+    path("provider/<pk>",views.ProviderDetailView.as_view(), name="provider-detail"),
+    path("provider/add/",views.ProviderCreateView.as_view(), name="provider-add"),
+    path("provider/<pk>/update/",views.ProviderUpdateView.as_view(), name="provider-update"),
+    path("provider/<pk>/delete/",views.ProviderDeleteView.as_view(), name="provider-delete"),
+
+    # Prix fournisseurs :
+    path("providerPrice/<pk>/update/",views.ProviderProductPriceUpdateView.as_view(), name="providerPrice-update"),
+    path("providerPrice/<pk>/delete/",views.ProviderProductPriceDeleteView.as_view(), name="providerPrice-delete"),
+    path("providerPrice/<int:provider_id>/add/",views.ProviderProductPriceCreateView.as_view(), name="providerPrice-add"),
+
 ]

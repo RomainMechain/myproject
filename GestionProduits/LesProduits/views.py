@@ -1,17 +1,31 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
-from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
+from django.http import HttpResponse, HttpResponseForbidden, Http404
+from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm, ProviderForm, ProviderProductPriceUpdateForm, ProviderProductPriceCreateForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required , user_passes_test
 from django.utils.decorators import method_decorator
+from functools import wraps
+
+# Décorateurs :
+
+def admin_required(function):
+    @wraps(function)
+    def wrap(request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.is_superuser:
+            return function(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+    return wrap
+
+# Home :
 
 class HomeView(TemplateView) :
     template_name = "home.html"
@@ -295,3 +309,89 @@ def ContactView(request):
     else:
         form = ContactUsForm()
     return render(request, "Support/contact.html", {'titreh1': titreh1, 'form': form})
+
+# Provider : 
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderListView(ListView):
+    model = Provider
+    template_name = "Provider/list_providers.html"
+    context_object_name = "providers"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderListView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Liste des fournisseurs"
+        context['providers'] = Provider.objects.all()
+        return context
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderDetailView(DetailView):
+    model = Provider
+    template_name = "Provider/detail_provider.html"
+    context_object_name = "provider"
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderDetailView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Détail fournisseur"
+        context['productsPrice'] = ProviderProductPrice.objects.filter(provider=self.object)
+        return context
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderCreateView(CreateView):
+    model = Provider
+    form_class = ProviderForm
+    template_name = "Provider/new_provider.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        provider = form.save()
+        return redirect('provider-list')
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderUpdateView(UpdateView):
+    model = Provider
+    form_class = ProviderForm
+    template_name = "Provider/update_provider.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        provider = form.save()
+        return redirect('provider-detail', provider.id)
+    
+@method_decorator(admin_required, name='dispatch')
+class ProviderDeleteView(DeleteView) : 
+    model = Provider
+    template_name = "Provider/delete_provider.html"
+    success_url = reverse_lazy('provider-list')
+
+# ProviderProductPrice :
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderProductPriceUpdateView(UpdateView):
+    model = ProviderProductPrice
+    form_class = ProviderProductPriceUpdateForm
+    template_name = "ProviderProductPrice/update_provider_product_price.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        providerProductPrice = form.save()
+        return redirect('provider-detail', providerProductPrice.provider.id)
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderProductPriceDeleteView(DeleteView):
+    model = ProviderProductPrice
+    template_name = "ProviderProductPrice/delete_provider_product_price.html"
+
+    def get_success_url(self):
+        provider_id = self.object.provider.id
+        return reverse('provider-detail', kwargs={'pk': provider_id})
+
+@method_decorator(admin_required, name='dispatch')
+class ProviderProductPriceCreateView(CreateView):
+    model = ProviderProductPrice
+    form_class = ProviderProductPriceCreateForm
+    template_name = "ProviderProductPrice/new_provider_product_price.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        provider_id = self.kwargs.get('provider_id')
+        form.instance.provider = Provider.objects.get(id=provider_id)
+        providerProductPrice = form.save()
+        return redirect('provider-detail', providerProductPrice.provider.id)
+    
