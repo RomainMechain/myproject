@@ -36,7 +36,7 @@ urlpatterns = [
     path("item/add/",views.ProductItemCreateView.as_view(), name="item-add"),
 
     #Achat
-    path("achats/<pk>",views.AchatView.as_view(), name="achat_produit"),
+    path("achats/<int:productitem_id>/",views.AchatView.as_view(), name="achat_produit"),
 
     # Support : 
     path("about",views.AboutView.as_view(), name='about-page'),

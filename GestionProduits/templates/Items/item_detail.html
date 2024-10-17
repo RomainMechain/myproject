@@ -13,31 +13,29 @@ Mon application DJANGO
     <li>{{ attribute.product_attribute.name }} : {{ attribute.value }}</li>
 {% empty %}
 <li>Aucun attribut associé à cette déclinaison.</li>
-<li>Quantité : {{ productitem.quantity }}</li>
 {% endfor %}
+<li>Quantité : {{ productitem.quantity }}</li>
 </ul>
 
-<h3>Acheter le produit</h3>
-<p>Sélectionner la quantité</p>
-
-<form method="post" action="{% url 'achat_produit' productitem.id %}">
-    {% csrf_token %}
-    <select name="quantity">
-        {% for quantite in quantity_range %}
-            <option value="{{ quantite }}">{{ quantite }}</option>
-        {% endfor %}
-    </select>
-    <input type="hidden" name="unit_price" value="{{ productitem.product.price_ttc }}">
-    <button type="submit" class="btn btn-primary mt-2">Acheter</button>
-</form>
-
-
-<p>Prix unitaire : {{ productitem.product.price_ttc }} €</p>
-
+{% if productitem.quantity > 0 %}
+    <h3>Acheter le produit</h3>
+    <p>Sélectionner la quantité</p>
+    <form method="post" action="{% url 'achat_produit' productitem.id %}">
+        {% csrf_token %}
+        <select name="quantity">
+            {% for quantite in quantity_range %}
+                <option value="{{ quantite }}">{{ quantite }}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="unit_price" value="{{ productitem.product.price_ttc }}">
+        <button type="submit" class="btn btn-primary mt-2">Acheter</button>
+    </form>
+    <p>Prix unitaire : {{ productitem.product.price_ttc }} €</p>
+{% else %}
+    <p class="text-danger">Rupture de stock</p>
+{% endif %}
 
 <a href="{% url 'item-list' %}" class="btn btn-primary mt-2">Retour</a>
 <a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger mt-2">Supprimer</a>
 <a href="{% url 'item-update' productitem.id %}" class="btn btn-secondary mt-2">modifier</a>
-
-
 {% endblock %}

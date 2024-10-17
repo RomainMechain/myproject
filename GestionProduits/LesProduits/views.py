@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
@@ -253,6 +253,20 @@ class AchatView(TemplateView):
         unit_price = float(unit_price)
         total_price = unit_price * quantity
         return redirect(f"{reverse('achat_produit', args=[productitem_id])}?quantity={quantity}&price={total_price:.2f}")
+
+    def get(self, request, *args, **kwargs):
+        productitem_id = kwargs.get('productitem_id')
+        quantity = int(request.GET.get('quantity', 0))
+        if quantity > 0:
+            try:
+                productitem = ProductItem.objects.get(id=productitem_id)
+            except ProductItem.DoesNotExist:
+                raise Http404(f"ProductItem with id {productitem_id} does not exist")
+            if productitem.quantity >= quantity:
+                productitem.quantity -= quantity
+                productitem.save()
+            return redirect('item-list')
+        return super().get(request, *args, **kwargs)
     
 # Support :
     
