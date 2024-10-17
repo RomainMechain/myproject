@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ titreh1 }}
+{% endblock %}
+
+{% block contenu %}
+    <table class="table">
+        <thead>
+            <th>Nom</th>
+            <th>Adresse</th>
+            <th>Téléphone</th>
+        </thead>
+        <tbody>
+            {% for provider in providers %}
+                <tr>
+                    <td><a href="{% url 'provider-detail' provider.id %}">{{ provider.name }}</a></td>
+                    <td>{{ provider.address }} </td>
+                    <td>{{ provider.phone }} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
