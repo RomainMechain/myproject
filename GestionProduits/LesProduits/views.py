@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden
-from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice
+from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice, Order
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm, ProviderForm, ProviderProductPriceUpdateForm, ProviderProductPriceCreateForm
+from LesProduits.forms import ContactUsForm, ProductForm, ProductItemForm , AttributsValuesForm, ProviderForm, ProviderProductPriceUpdateForm, ProviderProductPriceCreateForm, OrderForm, OrderProductItemForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.forms.models import BaseModelForm
@@ -13,6 +13,7 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required , user_passes_test
 from django.utils.decorators import method_decorator
 from functools import wraps
+from django.utils import timezone
 
 # Décorateurs :
 
@@ -359,4 +360,31 @@ class ProviderProductPriceCreateView(CreateView):
         form.instance.provider = Provider.objects.get(id=provider_id)
         providerProductPrice = form.save()
         return redirect('provider-detail', providerProductPrice.provider.id)
+    
+# Orders :
+
+class OrderCreateView(CreateView):
+    model = Order
+    form_class = OrderForm
+    template_name = "Orders/new_order.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['order_product_item_form'] = OrderProductItemForm(self.request.POST, provider_id=self.kwargs.get('provider_id'))
+        else:
+            context['order_product_item_form'] = OrderProductItemForm(provider_id=self.kwargs.get('provider_id'))
+        return context
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        context = self.get_context_data()
+        provider_id = self.kwargs.get('provider_id')
+        form.instance.provider = Provider.objects.get(id=provider_id)
+        form.instance.date_creation = timezone.now()
+        order = form.save()
+        order_product_item_form = context['order_product_item_form']
+        # Trouver comment vérifier que productItem est pas null 
+        order_product_item_form.instance.order = order
+        order_product_item_form.save()
+        return redirect('provider-detail', order.provider.id)
     

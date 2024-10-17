@@ -31,4 +31,6 @@
         </tbody>
     </table>
     <a href="{% url 'providerPrice-add' provider.id %}" class="btn btn-primary mt-2">Ajouter un prix fournisseur</a>
+    <a href="{% url 'provider-list' %}" class="btn btn-primary mt-2">Retour à la liste des fournisseurs</a>
+    <a href="{% url 'order-add' provider.id %}" class="btn btn-primary mt-2">Passer commande</a>
 {% endblock %}

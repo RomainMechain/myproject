@@ -51,4 +51,7 @@ urlpatterns = [
     path("providerPrice/<pk>/delete/",views.ProviderProductPriceDeleteView.as_view(), name="providerPrice-delete"),
     path("providerPrice/<int:provider_id>/add/",views.ProviderProductPriceCreateView.as_view(), name="providerPrice-add"),
 
+    # Commandes :
+    path("orders/<int:provider_id>/add",views.OrderCreateView.as_view(), name="order-add"),
+
 ]
