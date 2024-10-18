@@ -1,0 +1,419 @@
+[
+    {
+        "model": "LesProduits.product",
+        "pk": 1,
+        "fields": {
+            "name": "Booster Pokémon",
+            "code": "BP001",
+            "price_ht": "5.00",
+            "price_ttc": "6.00",
+            "status": 1,
+            "date_creation": "2023-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "LesProduits.product",
+        "pk": 2,
+        "fields": {
+            "name": "ETB Pokémon",
+            "code": "EP001",
+            "price_ht": "40.00",
+            "price_ttc": "48.00",
+            "status": 1,
+            "date_creation": "2023-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "LesProduits.product",
+        "pk": 3,
+        "fields": {
+            "name": "Display Pokémon",
+            "code": "DP001",
+            "price_ht": "100.00",
+            "price_ttc": "120.00",
+            "status": 1,
+            "date_creation": "2023-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "LesProduits.product",
+        "pk": 4,
+        "fields": {
+            "name": "T-shirt Pokémon",
+            "code": "TS001",
+            "price_ht": "15.00",
+            "price_ttc": "18.00",
+            "status": 1,
+            "date_creation": "2023-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "LesProduits.product",
+        "pk": 5,
+        "fields": {
+            "name": "Hoodie Pokémon",
+            "code": "HD001",
+            "price_ht": "30.00",
+            "price_ttc": "36.00",
+            "status": 1,
+            "date_creation": "2023-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "LesProduits.product",
+        "pk": 6,
+        "fields": {
+            "name": "Sneakers Pokémon",
+            "code": "SN001",
+            "price_ht": "50.00",
+            "price_ttc": "60.00",
+            "status": 1,
+            "date_creation": "2023-01-01T00:00:00Z"
+        }
+    },
+    {
+        "model": "LesProduits.productattribute",
+        "pk": 1,
+        "fields": {
+            "name": "Series"
+        }
+    },
+    {
+        "model": "LesProduits.productattribute",
+        "pk": 2,
+        "fields": {
+            "name": "Edition"
+        }
+    },
+    {
+        "model": "LesProduits.productattribute",
+        "pk": 3,
+        "fields": {
+            "name": "Size"
+        }
+    },
+    {
+        "model": "LesProduits.productattribute",
+        "pk": 4,
+        "fields": {
+            "name": "Color"
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 1,
+        "fields": {
+            "value": "Sword & Shield",
+            "product_attribute": 1,
+            "position": 1
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 2,
+        "fields": {
+            "value": "Base Set",
+            "product_attribute": 2,
+            "position": 2
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 3,
+        "fields": {
+            "value": "Sun & Moon",
+            "product_attribute": 1,
+            "position": 1
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 4,
+        "fields": {
+            "value": "Hidden Fates",
+            "product_attribute": 2,
+            "position": 2
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 5,
+        "fields": {
+            "value": "S",
+            "product_attribute": 3,
+            "position": 1
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 6,
+        "fields": {
+            "value": "M",
+            "product_attribute": 3,
+            "position": 2
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 7,
+        "fields": {
+            "value": "L",
+            "product_attribute": 3,
+            "position": 3
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 8,
+        "fields": {
+            "value": "XL",
+            "product_attribute": 3,
+            "position": 4
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 9,
+        "fields": {
+            "value": "Red",
+            "product_attribute": 4,
+            "position": 1
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 10,
+        "fields": {
+            "value": "Blue",
+            "product_attribute": 4,
+            "position": 2
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 11,
+        "fields": {
+            "value": "Yellow",
+            "product_attribute": 4,
+            "position": 3
+        }
+    },
+    {
+        "model": "LesProduits.productattributevalue",
+        "pk": 12,
+        "fields": {
+            "value": "Black",
+            "product_attribute": 4,
+            "position": 4
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 1,
+        "fields": {
+            "color": "N/A",
+            "code": "PI001",
+            "product": 1,
+            "quantity": 100,
+            "attributes": [1, 2]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 2,
+        "fields": {
+            "color": "N/A",
+            "code": "PI002",
+            "product": 2,
+            "quantity": 50,
+            "attributes": [3, 4]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 3,
+        "fields": {
+            "color": "N/A",
+            "code": "PI003",
+            "product": 3,
+            "quantity": 30,
+            "attributes": [1, 4]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 4,
+        "fields": {
+            "color": "Red",
+            "code": "PI004",
+            "product": 4,
+            "quantity": 20,
+            "attributes": [5, 9]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 5,
+        "fields": {
+            "color": "Blue",
+            "code": "PI005",
+            "product": 4,
+            "quantity": 15,
+            "attributes": [6, 10]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 6,
+        "fields": {
+            "color": "Yellow",
+            "code": "PI006",
+            "product": 5,
+            "quantity": 10,
+            "attributes": [7, 11]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 7,
+        "fields": {
+            "color": "Black",
+            "code": "PI007",
+            "product": 5,
+            "quantity": 5,
+            "attributes": [8, 12]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 8,
+        "fields": {
+            "color": "Red",
+            "code": "PI008",
+            "product": 6,
+            "quantity": 25,
+            "attributes": [5, 9]
+        }
+    },
+    {
+        "model": "LesProduits.productitem",
+        "pk": 9,
+        "fields": {
+            "color": "Blue",
+            "code": "PI009",
+            "product": 6,
+            "quantity": 20,
+            "attributes": [6, 10]
+        }
+    },
+    {
+        "model": "LesProduits.provider",
+        "pk": 1,
+        "fields": {
+            "name": "Provider 1",
+            "address": "Address 1",
+            "phone": "1234567890"
+        }
+    },
+    {
+        "model": "LesProduits.provider",
+        "pk": 2,
+        "fields": {
+            "name": "Provider 2",
+            "address": "Address 2",
+            "phone": "0987654321"
+        }
+    },
+    {
+        "model": "LesProduits.providerproductprice",
+        "pk": 1,
+        "fields": {
+            "product": 1,
+            "provider": 1,
+            "price": "4.00"
+        }
+    },
+    {
+        "model": "LesProduits.providerproductprice",
+        "pk": 2,
+        "fields": {
+            "product": 2,
+            "provider": 2,
+            "price": "35.00"
+        }
+    },
+    {
+        "model": "LesProduits.providerproductprice",
+        "pk": 3,
+        "fields": {
+            "product": 3,
+            "provider": 1,
+            "price": "90.00"
+        }
+    },
+    {
+        "model": "LesProduits.providerproductprice",
+        "pk": 4,
+        "fields": {
+            "product": 4,
+            "provider": 2,
+            "price": "12.00"
+        }
+    },
+    {
+        "model": "LesProduits.providerproductprice",
+        "pk": 5,
+        "fields": {
+            "product": 5,
+            "provider": 1,
+            "price": "25.00"
+        }
+    },
+    {
+        "model": "LesProduits.providerproductprice",
+        "pk": 6,
+        "fields": {
+            "product": 6,
+            "provider": 2,
+            "price": "45.00"
+        }
+    },
+    {
+        "model": "LesProduits.order",
+        "pk": 1,
+        "fields": {
+            "date_creation": "2023-01-01T00:00:00Z",
+            "status": 1,
+            "name": "Order 1",
+            "provider": 1
+        }
+    },
+    {
+        "model": "LesProduits.order",
+        "pk": 2,
+        "fields": {
+            "date_creation": "2023-01-01T00:00:00Z",
+            "status": 1,
+            "name": "Order 2",
+            "provider": 2
+        }
+    },
+    {
+        "model": "LesProduits.orderproductitem",
+        "pk": 1,
+        "fields": {
+            "productItem": 1,
+            "order": 1,
+            "quantity": 20
+        }
+    },
+    {
+        "model": "LesProduits.orderproductitem",
+        "pk": 2,
+        "fields": {
+            "productItem": 2,
+            "order": 2,
+            "quantity": 10
+        }
+    }
+]
