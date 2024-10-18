@@ -9,7 +9,7 @@ class ContactUsForm(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ['status']
+        fields = ['name', 'code', 'price_ht', 'price_ttc', 'status']
 
 class ProductItemForm(forms.ModelForm):
     class Meta:
