@@ -469,3 +469,24 @@ class OrderProductItemCreateView(CreateView):
         form.instance.order = Order.objects.get(id=order_id)
         order_product_item = form.save()
         return redirect('order-detail', order_product_item.order.id)
+
+# Actions sur les commandes : 
+
+@admin_required
+def order_passed(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order.status = 1
+    order.save()
+    return redirect('order-detail', order_id)
+
+@admin_required
+def order_received(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order.status = 2
+    order.save()
+    items = OrderProductItem.objects.filter(order=order)
+    for item in items:
+        product_item = item.productItem
+        product_item.quantity += item.quantity
+        product_item.save()
+    return redirect('order-detail', order_id)

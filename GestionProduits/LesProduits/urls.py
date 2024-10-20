@@ -61,4 +61,8 @@ urlpatterns = [
     # OrderProductItem : 
     path("orderProductItem/add/<int:order_id>",views.OrderProductItemCreateView.as_view(), name="orderProductItem-add"),
 
+    # Actions commandes : 
+    path("order/<int:order_id>/passed",views.order_passed, name="order-passed"),
+    path("order/<int:order_id>/received",views.order_received, name="order-received"),
+
 ]
