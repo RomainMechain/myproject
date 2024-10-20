@@ -432,3 +432,9 @@ class OrderDetailView(DetailView):
         context['items'] = items
         context['total_order'] = total_order
         return context
+
+@method_decorator(admin_required, name='dispatch')
+class OrderDeleteView(DeleteView):
+    model = Order
+    template_name = "Orders/delete_order.html"
+    success_url = reverse_lazy('order-list')
