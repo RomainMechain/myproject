@@ -5,7 +5,7 @@ from LesProduits.models import Product
 
 class ProductCreateViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='secret')
+        self.user = User.objects.create_superuser(username='testuser', password='secret')
         self.client.login(username='testuser', password='secret')
 
     def test_create_view_get(self):

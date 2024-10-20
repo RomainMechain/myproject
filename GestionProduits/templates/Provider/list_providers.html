@@ -21,4 +21,7 @@
             {% endfor %}
         </tbody>
     </table>
+    {% if user.is_superuser %}
+        <a href="{% url 'provider-add' %}" class="btn btn-primary">Ajouter un fournisseur</a>
+    {% endif %}
 {% endblock %}
