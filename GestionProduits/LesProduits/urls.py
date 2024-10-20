@@ -35,11 +35,37 @@ urlpatterns = [
     path("item/<pk>/update/",views.ProductItemUpdateView.as_view(), name="item-update"),
     path("item/add/",views.ProductItemCreateView.as_view(), name="item-add"),
 
+    #Achat
+    path("achats/<int:productitem_id>/",views.AchatView.as_view(), name="achat_produit"),
+
     # Support : 
     path("about",views.AboutView.as_view(), name='about-page'),
     path('contact/', views.ContactView, name='contact'),
 
     # Fournisseurs :
     path("providers",views.ProviderListView.as_view(), name="provider-list"),
+    path("provider/<pk>",views.ProviderDetailView.as_view(), name="provider-detail"),
+    path("provider/add/",views.ProviderCreateView.as_view(), name="provider-add"),
+    path("provider/<pk>/update/",views.ProviderUpdateView.as_view(), name="provider-update"),
+    path("provider/<pk>/delete/",views.ProviderDeleteView.as_view(), name="provider-delete"),
+
+    # Prix fournisseurs :
+    path("providerPrice/<pk>/update/",views.ProviderProductPriceUpdateView.as_view(), name="providerPrice-update"),
+    path("providerPrice/<pk>/delete/",views.ProviderProductPriceDeleteView.as_view(), name="providerPrice-delete"),
+    path("providerPrice/<int:provider_id>/add/",views.ProviderProductPriceCreateView.as_view(), name="providerPrice-add"),
+
+    # Commandes :
+    path("orders/<int:provider_id>/add",views.OrderCreateView.as_view(), name="order-add"),
+    path("orders",views.OrderListView.as_view(), name="order-list"),
+    path("order/<pk>",views.OrderDetailView.as_view(), name="order-detail"),
+    path("order/<pk>/delete/",views.OrderDeleteView.as_view(), name="order-delete"),
+    path("order/<pk>/update/",views.OrderUpdateView.as_view(), name="order-update"),
+
+    # OrderProductItem : 
+    path("orderProductItem/add/<int:order_id>",views.OrderProductItemCreateView.as_view(), name="orderProductItem-add"),
+
+    # Actions commandes : 
+    path("order/<int:order_id>/passed",views.order_passed, name="order-passed"),
+    path("order/<int:order_id>/received",views.order_received, name="order-received"),
 
 ]

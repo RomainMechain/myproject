@@ -1,22 +1,73 @@
 {% extends 'base.html' %}
+
 {% block title %}
-Mon application DJANGO
+    Mon application DJANGO
 {% endblock %}
+
 {% block menu %}
-<h1>{{titremenu}}</h1>
+    <h1 class="display-4">{{ titremenu }}</h1>
 {% endblock %}
+
 {% block contenu %}
-<h2>{{ productitem.product.name }}</h2>
-<ul>
-<li>Code : {{ productitem.code }}</li>
-{% for attribute in attributes %}
-<li>{{ attribute.product_attribute.name }} : {{ attribute.value }}</li>
-<li>Quantité : {{ productitem.quantity }}</li>
-{% empty %}
-<li>Aucun attribut associé à cette déclinaison.</li>
-{% endfor %}
-</ul>
-<a href="{% url 'item-list' %}" class="btn btn-primary mt-2">Retour</a>
-<a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger mt-2">Supprimer</a>
-<a href="{% url 'item-update' productitem.id %}" class="btn btn-secondary mt-2">modifier</a>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="mb-4">{{ productitem.product.name }}</h2>
+                <ul class="list-group mb-4">
+                    <li class="list-group-item"><strong>Code :</strong> {{ productitem.code }}</li>
+                    {% for attribute in attributes %}
+                        <li class="list-group-item"><strong>{{ attribute.product_attribute.name }} :</strong> {{ attribute.value }}</li>
+                    {% empty %}
+                        <li class="list-group-item">Aucun attribut associé à cette déclinaison.</li>
+                    {% endfor %}
+                    <li class="list-group-item"><strong>Quantité :</strong> {{ productitem.quantity }}</li>
+                </ul>
+
+                <h3 class="mb-4">Acheter le produit</h3>
+                <p>Sélectionner la quantité</p>
+
+                {% if productitem.quantity > 0 %}
+                    <form method="post" action="{% url 'achat_produit' productitem.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="quantity">Quantité</label>
+                            <select name="quantity" id="quantity" class="form-control">
+                                {% for quantite in quantity_range %}
+                                    <option value="{{ quantite }}">{{ quantite }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input type="hidden" name="unit_price" id="unit_price" value="{{ productitem.product.price_ttc }}">
+                        <button type="submit" class="btn btn-primary mt-2">Acheter</button>
+                    </form>
+                    <p class="mt-2"><strong>Prix unitaire :</strong> {{ productitem.product.price_ttc }} €</p>
+                    <p><strong>Prix total :</strong> <span id="total_price">{{ productitem.product.price_ttc }}</span> €</p>
+                {% else %}
+                    <p class="text-danger">Rupture de stock</p>
+                {% endif %}
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const quantitySelect = document.getElementById('quantity');
+                        const unitPrice = parseFloat(document.getElementById('unit_price').value);
+                        const totalPriceElement = document.getElementById('total_price');
+
+                        quantitySelect.addEventListener('change', function() {
+                            const selectedQuantity = parseInt(this.value);
+                            const totalPrice = unitPrice * selectedQuantity;
+                            totalPriceElement.textContent = totalPrice.toFixed(2);
+                        });
+                    });
+                </script>
+
+                <div class="btn-group mt-4" role="group">
+                    <a href="{% url 'item-list' %}" class="btn btn-primary">Retour</a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger">Supprimer</a>
+                        <a href="{% url 'item-update' productitem.id %}" class="btn btn-secondary">Modifier</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

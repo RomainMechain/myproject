@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+    <h1>Suppression d'un Prix fournisseur</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Etes-vous sûr de vouloir supprimer le prix fournisseur pour le produit : {{ object.product.name }} ?</p>
+        <button type="submit" class="btn btn-success mt-2">Confirmer</button>
+        <a href="{% url 'provider-detail' object.provider.id %}" class="btn btn-danger mt-2">Annuler</a>
+    </form>
+{% endblock %}

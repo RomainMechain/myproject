@@ -2,4 +2,9 @@ GestionProduits/db.sqlite3
 GestionProduits/GestionProduits/__pycache__
 GestionProduits/LesProduits/__pycache__
 GestionProduits/LesProduits/migrations/__pycache__
-GestionProduits/LesProduits/static/node_modules
+GestionProduits/LesProduits/tests/__pycache__
+GestionProduits/LesProduits/tests/forms/__pycache__
+GestionProduits/LesProduits/tests/models/__pycache__
+GestionProduits/LesProduits/tests/views/__pycache__
+GestionProduits/LesProduits/tests/urls/__pycache__
+.coverage

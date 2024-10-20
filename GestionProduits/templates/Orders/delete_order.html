@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+    <h1>Suppression d'une commande</h1>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Etes-vous sûr de vouloir supprimer la commande : {{ object.name }} ?</p>
+        <button type="submit" class="btn btn-success mt-2">Confirmer</button>
+        <a href="{% url 'order-list' %}" class="btn btn-danger mt-2">Annuler</a>
+    </form>
+{% endblock %}
