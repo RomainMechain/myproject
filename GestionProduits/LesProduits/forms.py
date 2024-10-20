@@ -39,6 +39,13 @@ class ProviderProductPriceCreateForm(forms.ModelForm):
         model = ProviderProductPrice
         exclude = ['provider']
 
+    def __init__(self, *args, **kwargs):
+        provider = kwargs.pop('provider', None)
+        super(ProviderProductPriceCreateForm, self).__init__(*args, **kwargs)       
+        if provider:
+            existing_product_ids = ProviderProductPrice.objects.filter(provider=provider).values_list('product_id', flat=True)
+            self.fields['product'].queryset = Product.objects.exclude(id__in=existing_product_ids)
+
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order

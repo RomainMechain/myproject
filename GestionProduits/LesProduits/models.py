@@ -58,7 +58,8 @@ class ProductItem(models.Model):
     quantity = models.PositiveIntegerField("Quantité", default=0, null=True, blank=True)
        
     def __str__(self):
-        return "{0} {1}".format(self.color, self.code)
+        attributes_str = ", ".join([attr.value for attr in self.attributes.all()])
+        return "{0} {1}".format(self.product.name, attributes_str)
     
 class ProductAttribute(models.Model):
     """

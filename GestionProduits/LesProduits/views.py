@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
 from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice, Order
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -355,6 +355,14 @@ class ProviderProductPriceCreateView(CreateView):
     form_class = ProviderProductPriceCreateForm
     template_name = "ProviderProductPrice/new_provider_product_price.html"
 
+    # Permet de passer un instance de provider à la création du formulaire, pour filtrer les produits qui ont déjà un prix pour ce fournisseur
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        provider_id = self.kwargs.get('provider_id')
+        provider = get_object_or_404(Provider, id=provider_id)
+        kwargs['provider'] = provider
+        return kwargs
+
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         provider_id = self.kwargs.get('provider_id')
         form.instance.provider = Provider.objects.get(id=provider_id)
@@ -363,6 +371,7 @@ class ProviderProductPriceCreateView(CreateView):
     
 # Orders :
 
+@method_decorator(admin_required, name='dispatch')
 class OrderCreateView(CreateView):
     model = Order
     form_class = OrderForm
@@ -383,8 +392,12 @@ class OrderCreateView(CreateView):
         form.instance.date_creation = timezone.now()
         order = form.save()
         order_product_item_form = context['order_product_item_form']
-        # Trouver comment vérifier que productItem est pas null 
-        order_product_item_form.instance.order = order
-        order_product_item_form.save()
+        product_item_selected = order_product_item_form.data.get('productItem')
+        if product_item_selected:
+            order_product_item_form.instance.order = order
+            order_product_item_form.save()
+        else:
+            # Supprime la commande si aucun item n'est sélectionné
+            order.delete()
         return redirect('provider-detail', order.provider.id)
     
