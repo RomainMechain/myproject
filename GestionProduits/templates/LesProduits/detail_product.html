@@ -5,33 +5,42 @@
 {% endblock %}
 
 {% block menu %}
-    <h1>{{ titremenu }}</h1>
+    <h1 class="display-4">{{ titremenu }}</h1>
 {% endblock %}
 
 {% block contenu %}
-    <h2>{{ product.name }}</h2>
-    <ul>
-        <li>Code : {{ product.code }}</li>
-        <li>Prix HT : {{ product.price_ht }}</li>
-        <li>Prix TTC: {{ product.price_ttc }}</li>
-        <li>Date de création : {{ product.date_creation }}</li>
-    </ul>
-    <a href="{% url 'product-update' product.id %}" class="btn btn-secondary mt-2">modifier</a>
-    <a href="{% url 'product-delete' product.id %}" class="btn btn-danger mt-2">Supprimer</a>
-    <a href="{% url 'product-list' %}" class="btn btn-primary mt-2">Retour à la liste des produits</a>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="mb-4">{{ product.name }}</h2>
+                <ul class="list-group mb-4">
+                    <li class="list-group-item"><strong>Code :</strong> {{ product.code }}</li>
+                    <li class="list-group-item"><strong>Prix HT :</strong> {{ product.price_ht }}</li>
+                    <li class="list-group-item"><strong>Prix TTC :</strong> {{ product.price_ttc }}</li>
+                    <li class="list-group-item"><strong>Date de création :</strong> {{ product.date_creation }}</li>
+                </ul>
+                <div class="btn-group mb-4" role="group">
+                    <a href="{% url 'product-update' product.id %}" class="btn btn-secondary">Modifier</a>
+                    <a href="{% url 'product-delete' product.id %}" class="btn btn-danger">Supprimer</a>
+                    <a href="{% url 'product-list' %}" class="btn btn-primary">Retour à la liste des produits</a>
+                </div>
 
-
-    <h3>Item associés</h3>
-    <ul>
-        {% for item in items %}
-            {% for attribute in item.attributes.all %}
-            <p>{{ attribute.product_attribute.name }} : {{ attribute.value }}</p>
-            {% empty %}
-                <p>Aucune valeur</p>
-            {% endfor %}
-            <a href="{% url 'item-detail' item.id %}" class="btn btn-primary mt-2">Détails Item</a>
-        {% empty %}
-            <li>Aucun item associé à ce produit.</li>
-        {% endfor %}
-    </ul>
+                <h3 class="mb-4">Items associés</h3>
+                <ul class="list-group">
+                    {% for item in items %}
+                        <li class="list-group-item">
+                            {% for attribute in item.attributes.all %}
+                                <p><strong>{{ attribute.product_attribute.name }} :</strong> {{ attribute.value }}</p>
+                            {% empty %}
+                                <p>Aucune valeur</p>
+                            {% endfor %}
+                            <a href="{% url 'item-detail' item.id %}" class="btn btn-primary mt-2">Détails Item</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">Aucun item associé à ce produit.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 {% endblock %}

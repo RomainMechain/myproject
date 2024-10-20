@@ -36,7 +36,7 @@ class ProductItemModelTest(TestCase):
         """
         Tester la méthode __str__ du modèle ProductItem
         """
-        self.assertEqual(str(self.product_item), "Red PI001")
+        self.assertEqual(str(self.product_item), "Booster Pokémon Red")
 
     def test_update_product_item(self):
         """

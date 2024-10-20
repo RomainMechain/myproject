@@ -78,7 +78,7 @@ class ProductDetailView(DetailView):
         context['titreh1'] = "Détail produit"
         return context
     
-@method_decorator(login_required, name='dispatch')
+@method_decorator(admin_required, name='dispatch')
 class ProductCreateView(CreateView):
     model = Product
     form_class=ProductForm
@@ -88,7 +88,7 @@ class ProductCreateView(CreateView):
         product = form.save()
         return redirect('product-detail', product.id)
    
-@method_decorator(login_required, name='dispatch')   
+@method_decorator(admin_required, name='dispatch')   
 class ProductUpdateView(UpdateView):
     model = Product
     form_class=ProductForm
@@ -98,7 +98,7 @@ class ProductUpdateView(UpdateView):
         product = form.save()
         return redirect('product-detail', product.id)
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(admin_required, name='dispatch')
 class ProductDeleteView(DeleteView) : 
     model = Product
     template_name = "LesProduits/delete_product.html"
@@ -168,16 +168,17 @@ class ProductAttributeDetailView(DetailView):
         context['values']=ProductAttributeValue.objects.filter(product_attribute=self.object).order_by('position')
         return context
     
-@method_decorator(login_required, name='dispatch')
+@method_decorator(admin_required, name='dispatch')
 class ProductAttributeCreateView(CreateView):
     model = ProductAttribute
     form_class=AttributsValuesForm
     template_name = "Attributs/new_attributs.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
         return redirect('attribut-list')
    
-@method_decorator(login_required, name='dispatch')   
+@method_decorator(admin_required, name='dispatch')   
 class ProductAttributeUpdateView(UpdateView):
     model = ProductAttribute
     form_class=AttributsValuesForm
@@ -186,7 +187,7 @@ class ProductAttributeUpdateView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         return redirect('attribut-list')
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(admin_required, name='dispatch')
 class ProductAttributeDeleteView(DeleteView) : 
     model = ProductAttribute
     template_name = "Attributs/delete_attribute.html"
@@ -224,14 +225,13 @@ class ProductItemDetailView(DetailView):
         context['total_price'] = self.object.product.price_ttc * self.object.quantity
         return context
     
-    
-@method_decorator(login_required, name='dispatch')   
+@method_decorator(admin_required, name='dispatch')   
 class ProductItemDeleteView(DeleteView) : 
     model = ProductItem
     template_name = "Items/delete_items.html"
     success_url = reverse_lazy('item-list')
 
-@method_decorator(login_required, name='dispatch')   
+@method_decorator(admin_required, name='dispatch')   
 class ProductItemUpdateView(UpdateView):
     model = ProductItem
     form_class=ProductItemForm
@@ -240,19 +240,20 @@ class ProductItemUpdateView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         product = form.save()
         return redirect('item-detail', product.id)
-    
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(admin_required, name='dispatch')
 class ProductItemCreateView(CreateView):
     model = ProductItem
     form_class=ProductItemForm
     template_name = "Items/new_item.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        product = form.save()
         return redirect('item-list')
     
 # Achat :
 
+@method_decorator(login_required, name='dispatch')
 class AchatView(TemplateView):
     template_name = "Achat/achat.html"
 

@@ -5,17 +5,25 @@
 {% endblock %}
 
 {% block menu %}
-    <h1>{{ titremenu }}</h1>
+    <h1 class="display-4">{{ titremenu }}</h1>
 {% endblock %}
 
 {% block contenu %}
-    <h2>{{ productattribute.name }}</h2>
-    <ul>
-        {% for value in values %}
-            <li>{{ value.value }} (Position: {{ value.position }})</li>
-        {% empty %}
-            <li>Aucune valeur disponible pour cet attribut.</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'attribut-list' %}" class="btn btn-primary mt-2">Retour</a>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h2 class="mb-4">{{ productattribute.name }}</h2>
+                <ul class="list-group mb-4">
+                    {% for value in values %}
+                        <li class="list-group-item">
+                            {{ value.value }} <span class="badge badge-secondary">Position: {{ value.position }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">Aucune valeur disponible pour cet attribut.</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'attribut-list' %}" class="btn btn-primary">Retour</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

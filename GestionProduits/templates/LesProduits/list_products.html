@@ -1,14 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Mon application DJANGO
-{% endblock %}
-
-{% block menu %}
-    <h1>Liste des produits</h1>
+    les produits
 {% endblock %}
 
 {% block contenu %}
+<h1>Liste des produits</h1>
     <table class="table">
         <thead>
             <th>Nom</th>
@@ -29,15 +26,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <p>
-        J'ai
-        {% if prdcts|length < 5 %}
-        peu de
-        {% elif prdcts|length < 10 %}
-        quelques
-        {% else %}
-        beaucoup de
-        {% endif %}
-        produits préférés.
-    </p>
+    {% if user.is_superuser %}
+        <a href="{% url 'product-add'  %}" class="btn btn-primary mt-2">Ajouter un produit</a>
+    {% endif %}
 {% endblock %}
