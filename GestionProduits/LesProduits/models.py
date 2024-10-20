@@ -135,6 +135,9 @@ class Order(models.Model):
     
     def __str__(self):
         return "{0} [{1}]".format(self.name, self.date_creation)
+
+    def get_status_display(self):
+        return dict(COMMANDE_STATUS).get(self.status)
     
 class OrderProductItem(models.Model):
     """

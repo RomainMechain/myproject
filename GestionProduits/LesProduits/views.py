@@ -400,4 +400,16 @@ class OrderCreateView(CreateView):
             # Supprime la commande si aucun item n'est sélectionné
             order.delete()
         return redirect('provider-detail', order.provider.id)
+
+@method_decorator(admin_required, name='dispatch')
+class OrderListView(ListView):
+    model = Order
+    template_name = "Orders/list_orders.html"
+    context_object_name = "orders"
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderListView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Liste des commandes"
+        context['orders'] = Order.objects.all()
+        return context
     

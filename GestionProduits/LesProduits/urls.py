@@ -53,5 +53,6 @@ urlpatterns = [
 
     # Commandes :
     path("orders/<int:provider_id>/add",views.OrderCreateView.as_view(), name="order-add"),
+    path("orders",views.OrderListView.as_view(), name="order-list"),
 
 ]
