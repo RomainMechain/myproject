@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
-from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice, Order
+from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice, Order, OrderProductItem
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
@@ -413,3 +413,22 @@ class OrderListView(ListView):
         context['orders'] = Order.objects.all()
         return context
     
+@method_decorator(admin_required, name='dispatch')
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = "Orders/detail_order.html"
+    context_object_name = "order"
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Détail commande"
+        OrderProductItems = OrderProductItem.objects.filter(order=self.object)
+        items = []
+        total_order = 0
+        for item in OrderProductItems:
+            price_unitaire = ProviderProductPrice.objects.get(provider=self.object.provider, product=item.productItem.product)
+            items.append({'item': item.productItem, 'price_unitaire': price_unitaire.price, 'quantity': item.quantity, 'total': item.quantity * price_unitaire.price})
+            total_order += item.quantity * price_unitaire.price
+        context['items'] = items
+        context['total_order'] = total_order
+        return context

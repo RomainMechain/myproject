@@ -19,7 +19,7 @@
         <tbody>
             {% for order in orders %}
                 <tr>
-                    <td>{{ order.name }}</td>
+                    <td><a href="{% url 'order-detail' order.id %}">{{ order.name }}</a></td>
                     <td>{{ order.provider.name }}</td>
                     <td>{{ order.date_creation }}</td>
                     <td>{{ order.get_status_display }}</td>
