@@ -1,5 +1,5 @@
 from django import forms
-from LesProduits.models import Product, ProductItem, ProductAttribute, Provider, ProviderProductPrice, Order, OrderProductItem
+from LesProduits.models import Product, ProductItem, ProductAttribute, Provider, ProviderProductPrice, ProductAttributeValue, Order, OrderProductItem
 
 class ContactUsForm(forms.Form):
     name = forms.CharField(required=False)
@@ -9,14 +9,13 @@ class ContactUsForm(forms.Form):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ['status']
+        fields = ['name', 'code', 'price_ht', 'price_ttc', 'status']
 
 class ProductItemForm(forms.ModelForm):
     class Meta:
         model = ProductItem
         #fields = '__all__'
         exclude = ['price_ttc', 'status']
-
 
 class AttributsValuesForm(forms.ModelForm):
     class Meta:
@@ -63,4 +62,7 @@ class OrderProductItemForm(forms.ModelForm):
             products = ProviderProductPrice.objects.filter(provider_id=provider_id).values_list('product_id', flat=True)
             self.fields['productItem'].queryset = ProductItem.objects.filter(product_id__in=products)
 
-
+class ProductAttributeValueForm(forms.ModelForm):
+    class Meta:
+        model = ProductAttributeValue
+        fields = ['value']

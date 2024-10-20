@@ -10,13 +10,50 @@ Mon application DJANGO
 <ul>
 <li>Code : {{ productitem.code }}</li>
 {% for attribute in attributes %}
-<li>{{ attribute.product_attribute.name }} : {{ attribute.value }}</li>
-<li>Quantité : {{ productitem.quantity }}</li>
+    <li>{{ attribute.product_attribute.name }} : {{ attribute.value }}</li>
 {% empty %}
 <li>Aucun attribut associé à cette déclinaison.</li>
 {% endfor %}
+<li>Quantité : {{ productitem.quantity }}</li>
 </ul>
+
+<h3>Acheter le produit</h3>
+<p>Sélectionner la quantité</p>
+
+{% if productitem.quantity > 0 %}
+    <form method="post" action="{% url 'achat_produit' productitem.id %}">
+        {% csrf_token %}
+        <select name="quantity" id="quantity">
+            {% for quantite in quantity_range %}
+                <option value="{{ quantite }}">{{ quantite }}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="unit_price" id="unit_price" value="{{ productitem.product.price_ttc }}">
+        <button type="submit" class="btn btn-primary mt-2">Acheter</button>
+    </form>
+    <p>Prix unitaire : {{ productitem.product.price_ttc }} €</p>
+    <p>Prix total : <span id="total_price">{{ productitem.product.price_ttc }}</span> €</p>
+{% else %}
+    <p class="text-danger">Rupture de stock</p>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quantitySelect = document.getElementById('quantity');
+    const unitPrice = parseFloat(document.getElementById('unit_price').value);
+    const totalPriceElement = document.getElementById('total_price');
+
+    quantitySelect.addEventListener('change', function() {
+        const selectedQuantity = parseInt(this.value);
+        const totalPrice = unitPrice * selectedQuantity;
+        totalPriceElement.textContent = totalPrice.toFixed(2);
+    });
+});
+</script>
+
 <a href="{% url 'item-list' %}" class="btn btn-primary mt-2">Retour</a>
 <a href="{% url 'item-delete' productitem.id %}" class="btn btn-danger mt-2">Supprimer</a>
 <a href="{% url 'item-update' productitem.id %}" class="btn btn-secondary mt-2">modifier</a>
+
+
 {% endblock %}

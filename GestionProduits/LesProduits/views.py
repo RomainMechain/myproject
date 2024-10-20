@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden
 from LesProduits.models import Product, ProductAttribute, ProductAttributeValue, ProductItem, Provider, ProviderProductPrice, Order, OrderProductItem
+from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import authenticate, login, logout
@@ -175,7 +175,6 @@ class ProductAttributeCreateView(CreateView):
     template_name = "Attributs/new_attributs.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        product = form.save()
         return redirect('attribut-list')
    
 @method_decorator(login_required, name='dispatch')   
@@ -185,7 +184,6 @@ class ProductAttributeUpdateView(UpdateView):
     template_name = "Attributs/update_attribut.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        product = form.save()
         return redirect('attribut-list')
 
 @method_decorator(login_required, name='dispatch')
@@ -214,12 +212,18 @@ class ProductItemDetailView(DetailView):
     model = ProductItem
     template_name = "Items/item_detail.html"
     context_object_name = "productitem"
+
     def get_context_data(self, **kwargs):
         context = super(ProductItemDetailView, self).get_context_data(**kwargs)
         context['titremenu'] = "Détail déclinaison"
         # Récupérer les attributs associés à cette déclinaison
         context['attributes'] = self.object.attributes.all()
+        # Ajouter la plage de quantités disponibles
+        context['quantity_range'] = range(1, self.object.quantity + 1)
+        #Calculer le prix total
+        context['total_price'] = self.object.product.price_ttc * self.object.quantity
         return context
+    
     
 @method_decorator(login_required, name='dispatch')   
 class ProductItemDeleteView(DeleteView) : 
@@ -245,8 +249,39 @@ class ProductItemCreateView(CreateView):
     template_name = "Items/new_item.html"
 
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        product = form.save()
         return redirect('item-list')
+    
+# Achat :
+
+class AchatView(TemplateView):
+    template_name = "Achat/achat.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AchatView, self).get_context_data(**kwargs)
+        context['titreh1'] = "Achat"
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        productitem_id = kwargs.get('productitem_id')
+        quantity = int(request.POST.get('quantity'))
+        unit_price = request.POST.get('unit_price').replace(',', '.')
+        unit_price = float(unit_price)
+        total_price = unit_price * quantity
+        return redirect(f"{reverse('achat_produit', args=[productitem_id])}?quantity={quantity}&price={total_price:.2f}")
+
+    def get(self, request, *args, **kwargs):
+        productitem_id = kwargs.get('productitem_id')
+        quantity = int(request.GET.get('quantity', 0))
+        if quantity > 0:
+            try:
+                productitem = ProductItem.objects.get(id=productitem_id)
+            except ProductItem.DoesNotExist:
+                raise Http404(f"ProductItem with id {productitem_id} does not exist")
+            if productitem.quantity >= quantity:
+                productitem.quantity -= quantity
+                productitem.save()
+            return redirect('item-list')
+        return super().get(request, *args, **kwargs)
     
 # Support :
     
