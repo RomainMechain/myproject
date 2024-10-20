@@ -438,3 +438,34 @@ class OrderDeleteView(DeleteView):
     model = Order
     template_name = "Orders/delete_order.html"
     success_url = reverse_lazy('order-list')
+
+@method_decorator(admin_required, name='dispatch')
+class OrderUpdateView(UpdateView):
+    model = Order
+    form_class = OrderForm
+    template_name = "Orders/update_order.html"
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        order = form.save()
+        return redirect('order-detail', order.id)
+
+# OrderProductItem :
+
+@method_decorator(admin_required, name='dispatch')
+class OrderProductItemCreateView(CreateView):
+    model = OrderProductItem
+    form_class = OrderProductItemForm
+    template_name = "Orders/new_order_product_item.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        order = Order.objects.get(id=self.kwargs.get('order_id'))
+        provider_id = order.provider.id
+        kwargs['provider_id'] = provider_id
+        return kwargs
+
+    def form_valid(self, form):
+        order_id = self.kwargs.get('order_id')
+        form.instance.order = Order.objects.get(id=order_id)
+        order_product_item = form.save()
+        return redirect('order-detail', order_product_item.order.id)

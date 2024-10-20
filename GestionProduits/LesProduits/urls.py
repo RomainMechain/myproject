@@ -56,5 +56,9 @@ urlpatterns = [
     path("orders",views.OrderListView.as_view(), name="order-list"),
     path("order/<pk>",views.OrderDetailView.as_view(), name="order-detail"),
     path("order/<pk>/delete/",views.OrderDeleteView.as_view(), name="order-delete"),
+    path("order/<pk>/update/",views.OrderUpdateView.as_view(), name="order-update"),
+
+    # OrderProductItem : 
+    path("orderProductItem/add/<int:order_id>",views.OrderProductItemCreateView.as_view(), name="orderProductItem-add"),
 
 ]

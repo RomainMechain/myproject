@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="container mt-4">
+    <h1 class="mb-4">Ajout d'un produit dans la commande</h1>
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-success mt-2">Créer</button>
+    </form>
+</div>
+{% endblock %}

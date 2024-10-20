@@ -62,3 +62,5 @@ class OrderProductItemForm(forms.ModelForm):
         if provider_id:
             products = ProviderProductPrice.objects.filter(provider_id=provider_id).values_list('product_id', flat=True)
             self.fields['productItem'].queryset = ProductItem.objects.filter(product_id__in=products)
+
+
