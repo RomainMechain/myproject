@@ -30,7 +30,7 @@ class ProductItemCreateViewTest(TestCase):
 
 class ProductItemDetailViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='secret')
+        self.user = User.objects.create_superuser(username='testuser', password='secret')
         self.client.login(username='testuser', password='secret')
         self.product = Product.objects.create(
             name='Booster Pokémon',
@@ -63,7 +63,7 @@ class ProductItemDetailViewTest(TestCase):
 
 class ProductItemUpdateViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='secret')
+        self.user = User.objects.create_superuser(username='testuser', password='secret')
         self.client.login(username='testuser', password='secret')
         self.product = Product.objects.create(
             name='Booster Pokémon',
@@ -111,7 +111,7 @@ class ProductItemUpdateViewTest(TestCase):
 
 class ProductItemDeleteViewTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='secret')
+        self.user = User.objects.create_superuser(username='testuser', password='secret')
         self.client.login(username='testuser', password='secret')
         self.product = Product.objects.create(
             name='Booster Pokémon',
